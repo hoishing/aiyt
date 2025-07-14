@@ -43,7 +43,7 @@ uv tool upgrade {name}@latest
 - {yt_demo1}
 - {yt_demo2}
 
-![screenshot](screenshots/caption.webp)
+![screenshot](https://raw.githubusercontent.com/hoishing/aiyt/refs/heads/main/screenshots/caption.webp)
 
 ## Questions
 

@@ -6,8 +6,9 @@ from aiyt.utils import (
     transcribe,
     upload_gemini_audio,
 )
-from google.genai import Client
+from google.genai import Client, types
 from pytubefix import YouTube
+from textwrap import dedent
 
 
 def app_header(icon: str, color: str):
@@ -61,6 +62,9 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -
         disabled=not transcript,
     )
 
+    if transcript:
+        chat_ui(transcript, api_key, model)
+
 
 def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
     """Streamlit UI for transcribing audio"""
@@ -72,7 +76,48 @@ def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
         audio_file = upload_gemini_audio(filename, buffer, mime_type, client)
 
         transcript = transcribe(audio_file, client, model)
-        # st.text_area(
-        #     label="Transcript", key="transcript-output", value=transcript, height=400
-        # )
-        st.markdown(transcript)
+        st.text_area(
+            label="Transcript", key="transcript-output", value=transcript, height=400
+        )
+
+        chat_ui(transcript, api_key, model)
+
+
+def chat_ui(transcript: str, api_key: str, model: str) -> None:
+    """Streamlit chat interface for interacting with the transcript"""
+    st.markdown("#### 💬 &nbsp; Chat with Transcript")
+    sys_prompt = dedent(f"""\
+            You are a helpful assistant that can answer questions about this transcript:
+            <transcript>
+            {transcript}
+            </transcript>
+        """)
+
+    # Initialize chat object in session state
+    if "chat" not in st.session_state:
+        client = Client(api_key=api_key)
+        st.session_state.chat = client.chats.create(
+            model=model,
+            config=types.GenerateContentConfig(system_instruction=sys_prompt)
+        )
+
+    # Display chat history
+    for message in st.session_state.chat.get_history():
+        with st.chat_message(message.role):
+            st.markdown(message.parts[0].text)
+
+    # Accept user input
+    if prompt := st.chat_input("chat about the transcript..."):
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Generate and display assistant response
+        with st.chat_message("ai"):
+            try:
+                response = st.session_state.chat.send_message(prompt)
+                st.markdown(response.text)
+
+            except Exception as e:
+                st.error(e)
+                st.stop()
