@@ -9,7 +9,11 @@ def main():
 
     cmd = "uv run streamlit run aiyt/main.py"
     process = Popen(cmd.split())
-    process.wait()
+    try:
+        process.wait()
+    except KeyboardInterrupt:
+        process.terminate()
+        exit(0)
 
 
 if __name__ == "__main__":

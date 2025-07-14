@@ -1,2 +1,2 @@
 - add tests
-- ctrl-c exit should return 0
+- put the input into st.form
