@@ -1,16 +1,16 @@
 [project]
 name = "aiyt"
-version = "0.2.0"
+version = "0.2.1"
 description = "Transcribe, Chat and Summarize Youtube Video with AI"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "streamlit",
- "pytubefix",
- "watchdog",
- "google-genai",
- "click",
- "ruff>=0.12.3",
+    "pytubefix",
+    "watchdog",
+    "google-genai",
+    "click",
+    "ruff",
 ]
 
 [dependency-groups]

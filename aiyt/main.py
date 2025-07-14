@@ -1,19 +1,27 @@
 import streamlit as st
-from aiyt.utils import youtube_obj
 from aiyt.ui import app_header, caption_ui, divider, transcribe_ui
+from aiyt.utils import youtube_obj
 from pathlib import Path
-
 
 root_folder = Path(__file__).parent.parent
 
 
 def body():
-    api_key = st.text_input(
+    c1, c2 = st.columns([3, 2], vertical_alignment="bottom")
+    api_key = c1.text_input(
         "Gemini API key",
         key="gemini-api-key",
         type="password",
         help="Visit [gemini docs](https://ai.google.dev/gemini-api/docs/api-key) to get the API key",
     )
+    model = c2.selectbox(
+        "Select the model",
+        key="model",
+        options=["gemini-2.5-flash", "gemini-2.5-pro"],
+        index=0,
+        disabled=not api_key,
+    )
+
     url = st.text_input("Youtube URL", key="url-input", disabled=not api_key)
 
     if not api_key or not url:
@@ -28,14 +36,15 @@ def body():
     divider(key=1)
 
     if langs or not yt:
-        caption_ui(yt, langs, api_key)
+        caption_ui(yt, langs, api_key, model)
     else:
-        transcribe_ui(yt, api_key)
+        transcribe_ui(yt, api_key, model)
 
 
 def app():
     st.html(root_folder / "style.css")
     app_header(icon="youtube_activity", color="red")
+    st.write("")
     with st.container(border=True, key="main-container"):
         body()
 

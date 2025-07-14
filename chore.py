@@ -38,9 +38,12 @@ uvx {name}@latest
 uv tool upgrade {name}@latest
 ```
 
-## Demo
+## 📺 Demo
 
-<{yt_demo1}>
+- {yt_demo1}
+- {yt_demo2}
+
+![screenshot](screenshots/caption.webp)
 
 ## Questions
 

@@ -25,12 +25,12 @@ def youtube_obj(url: str | None) -> YouTube | None:
         return None
 
 
-def add_punctuation(api_key: str, transcript: str) -> str:
+def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     """Add punctuation to a transcript using Gemini's LLM."""
     sys_prompt = "add punctuations and appropiate paragraphs to the following text, do not add any comments"
     client = Client(api_key=api_key)
     response = client.models.generate_content(
-        model="gemini-2.0-flash-lite",
+        model=model,
         config=types.GenerateContentConfig(system_instruction=sys_prompt),
         contents=transcript,
     )
@@ -75,7 +75,7 @@ def upload_gemini_audio(
 def transcribe(
     audio: types.File | types.Part,
     client: Client,
-    model: str = "gemini-2.0-flash",
+    model: str,
     system_prompt: str = "You are a professional transcriber. You output only transcript, no other text.",
     user_prompt: str = "Generate a transcript of the speech",
 ) -> str:

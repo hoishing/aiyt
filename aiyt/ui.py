@@ -22,7 +22,7 @@ def divider(key: int = 1):
         st.divider()
 
 
-def caption_ui(yt: YouTube | None, langs: list[str], api_key: str) -> None:
+def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -> None:
     st.markdown("#### 💬 &nbsp; Extract Captions")
 
     lang = st.selectbox(
@@ -51,7 +51,7 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str) -> None:
             if format == "txt":
                 transcript = raw_transcript
             elif format == "ai formatted":
-                transcript = add_punctuation(api_key, raw_transcript)
+                transcript = add_punctuation(api_key, raw_transcript, model)
 
     st.text_area(
         label="Captions",
@@ -62,7 +62,7 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str) -> None:
     )
 
 
-def transcribe_ui(yt: YouTube, api_key: str) -> str:
+def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
     """Streamlit UI for transcribing audio"""
     st.markdown("#### 🗣️ &nbsp; Transcribe Audio")
     with st.spinner("No captions found, transcribing audio with Gemini..."):
@@ -71,7 +71,8 @@ def transcribe_ui(yt: YouTube, api_key: str) -> str:
         buffer, mime_type = download_yt_audio(yt)
         audio_file = upload_gemini_audio(filename, buffer, mime_type, client)
 
-        transcript = transcribe(audio_file, client)
-        st.text_area(
-            label="Transcript", key="transcript-output", value=transcript, height=400
-        )
+        transcript = transcribe(audio_file, client, model)
+        # st.text_area(
+        #     label="Transcript", key="transcript-output", value=transcript, height=400
+        # )
+        st.markdown(transcript)

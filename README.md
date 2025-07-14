@@ -30,7 +30,12 @@ uv tool upgrade aiyt@latest
 
 ## Demo
 
-<https://youtu.be/BdSL8LLJOok>
+- https://youtu.be/BdSL8LLJOok
+- https://youtu.be/I5r0O7iMjKc
+
+### Screenshots
+
+![screenshot](screenshots/caption.webp)
 
 ## Questions
 
