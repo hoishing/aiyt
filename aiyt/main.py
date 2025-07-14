@@ -1,6 +1,10 @@
 import streamlit as st
 from aiyt.utils import youtube_obj
-from ui import app_header, caption_ui, divider, transcribe_ui
+from aiyt.ui import app_header, caption_ui, divider, transcribe_ui
+from pathlib import Path
+
+
+root_folder = Path(__file__).parent.parent
 
 
 def body():
@@ -30,6 +34,7 @@ def body():
 
 
 def app():
+    st.html(root_folder / "style.css")
     app_header(icon="youtube_activity", color="red")
     with st.container(border=True, key="main-container"):
         body()

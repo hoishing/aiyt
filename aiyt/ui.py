@@ -1,13 +1,13 @@
 import streamlit as st
-from google.genai import Client
-from pytubefix import YouTube
-from utils import (
+from aiyt.utils import (
     add_punctuation,
     download_yt_audio,
     metadata,
     transcribe,
     upload_gemini_audio,
 )
+from google.genai import Client
+from pytubefix import YouTube
 
 
 def app_header(icon: str, color: str):
@@ -36,7 +36,7 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str) -> None:
     format = st.radio(
         label="Select the format",
         key="caption-format",
-        options=["srt", "txt"],
+        options=["srt", "txt", "ai formatted"],
         index=0,
         horizontal=True,
         disabled=not lang,
@@ -46,9 +46,12 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str) -> None:
     if lang:
         if format == "srt":
             transcript = yt.captions[lang].generate_srt_captions()
-        elif format == "txt":
+        else:
             raw_transcript = yt.captions[lang].generate_txt_captions()
-            transcript = add_punctuation(api_key, raw_transcript)
+            if format == "txt":
+                transcript = raw_transcript
+            elif format == "ai formatted":
+                transcript = add_punctuation(api_key, raw_transcript)
 
     st.text_area(
         label="Captions",

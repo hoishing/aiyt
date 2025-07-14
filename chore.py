@@ -4,7 +4,8 @@ name = metadata["name"]
 description = metadata["description"]
 caption = "https://www.youtube.com/watch?v=uYZ4J7ctpio"
 no_caption = "https://youtube.com/shorts/NbY29sW7gbU"
-
+yt_demo1 = "https://youtu.be/BdSL8LLJOok"
+yt_demo2 = "https://youtu.be/I5r0O7iMjKc"
 
 readme = f"""\
 # {name}
@@ -37,6 +38,10 @@ uvx {name}@latest
 uv tool upgrade {name}@latest
 ```
 
+## Demo
+
+<{yt_demo1}>
+
 ## Questions
 
 - [Github issue]
@@ -47,5 +52,5 @@ uv tool upgrade {name}@latest
 """
 
 if __name__ == "__main__":
-    with open("./README.md", 'w') as f:
+    with open("./README.md", "w") as f:
         f.write(readme)

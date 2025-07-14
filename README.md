@@ -28,6 +28,10 @@ uvx aiyt@latest
 uv tool upgrade aiyt@latest
 ```
 
+## Demo
+
+<https://youtu.be/BdSL8LLJOok>
+
 ## Questions
 
 - [Github issue]
