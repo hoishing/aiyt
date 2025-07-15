@@ -14,17 +14,6 @@ def pyproject_data() -> dict:
 metadata = pyproject_data()["project"]
 
 
-def youtube_obj(url: str | None) -> YouTube | None:
-    if not url:
-        return None
-    try:
-        yt = YouTube(url)
-        yt.check_availability()
-        return yt
-    except Exception:
-        return None
-
-
 def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     """Add punctuation to a transcript using Gemini's LLM."""
     sys_prompt = "add punctuations and appropiate paragraphs to the following text, do not add any comments"

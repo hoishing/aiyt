@@ -23,6 +23,35 @@ def divider(key: int = 1):
         st.divider()
 
 
+def input_ui() -> tuple[str, str, str]:
+    """Streamlit UI for inputting API key, model, and YouTube URL"""
+    with st.form(key="input-form", enter_to_submit=True, border=False):
+        c1, c2 = st.columns(2)
+        api_key = c1.text_input(
+            "Gemini API key",
+            key="gemini-api-key",
+            type="password",
+            help="Visit [gemini docs](https://ai.google.dev/gemini-api/docs/api-key) to get the API key",
+        )
+        model = c2.selectbox(
+            "Select the model",
+            key="model",
+            options=["gemini-2.5-flash", "gemini-2.5-pro"],
+            index=0,
+        )
+
+        c1, c2 = st.columns([3, 1], vertical_alignment="bottom")
+        url = c1.text_input("Youtube URL", key="url-input")
+
+        c2.form_submit_button("Submit", use_container_width=True)
+
+        submitable = api_key and model and url
+        if not submitable:
+            st.stop()
+
+    return api_key, model, url
+
+
 def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -> None:
     st.markdown("#### 💬 &nbsp; Extract Captions")
 
@@ -62,8 +91,7 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -
         disabled=not transcript,
     )
 
-    if transcript:
-        chat_ui(transcript, api_key, model)
+    return transcript
 
 
 def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
@@ -79,8 +107,7 @@ def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
         st.text_area(
             label="Transcript", key="transcript-output", value=transcript, height=400
         )
-
-        chat_ui(transcript, api_key, model)
+        return transcript
 
 
 def chat_ui(transcript: str, api_key: str, model: str) -> None:
@@ -98,7 +125,7 @@ def chat_ui(transcript: str, api_key: str, model: str) -> None:
         client = Client(api_key=api_key)
         st.session_state.chat = client.chats.create(
             model=model,
-            config=types.GenerateContentConfig(system_instruction=sys_prompt)
+            config=types.GenerateContentConfig(system_instruction=sys_prompt),
         )
 
     # Display chat history
