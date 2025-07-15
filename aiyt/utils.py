@@ -1,3 +1,4 @@
+import streamlit as st
 import tomllib
 from google.genai import Client, types
 from io import BytesIO
@@ -14,6 +15,7 @@ def pyproject_data() -> dict:
 metadata = pyproject_data()["project"]
 
 
+@st.cache_data
 def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     """Add punctuation to a transcript using Gemini's LLM."""
     sys_prompt = "add punctuations and appropiate paragraphs to the following text, do not add any comments"
@@ -26,6 +28,7 @@ def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     return response.text
 
 
+@st.cache_data
 def download_yt_audio(yt: YouTube) -> tuple[Buffer, str]:
     """download the lowest quality audio stream to a pytubefix Buffer object"""
     audio_stream = (
@@ -37,6 +40,7 @@ def download_yt_audio(yt: YouTube) -> tuple[Buffer, str]:
     return buffer, mime_type
 
 
+@st.cache_data
 def get_audio_part(mime_type: str, buffer: Buffer) -> types.Part:
     """convert the pytubefix Buffer object to a Gemini types.Part object"""
     return types.Part.from_bytes(data=buffer.read(), mime_type=mime_type)
@@ -50,6 +54,7 @@ def remove_duplicate_gemini_audio(name: str, client: Client):
             client.files.delete(name=file_name)
 
 
+@st.cache_data
 def upload_gemini_audio(
     name: str, buffer: Buffer, mime_type: str, client: Client
 ) -> types.File:
@@ -61,6 +66,7 @@ def upload_gemini_audio(
     return client.files.upload(file=io_obj, config=upload_config)
 
 
+@st.cache_data
 def transcribe(
     audio: types.File | types.Part,
     client: Client,

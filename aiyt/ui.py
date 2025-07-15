@@ -12,6 +12,7 @@ from pytubefix import YouTube
 from textwrap import dedent
 
 MODELS = ["gemini-2.0-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
+sess = st.session_state
 
 
 def app_header(icon: str, color: str):
@@ -49,11 +50,11 @@ def input_ui() -> tuple[str, str, str]:
         c2.form_submit_button(
             "Submit",
             use_container_width=True,
-            on_click=lambda: st.session_state.__setitem__("chat", None),
+            on_click=lambda: sess.__setattr__("chat", None),
         )
 
-        submitable = api_key and model and url
-        if not submitable:
+        submittable = api_key and model and url
+        if not submittable:
             st.stop()
 
     return api_key, model, url
@@ -62,38 +63,38 @@ def input_ui() -> tuple[str, str, str]:
 def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -> None:
     st.markdown("#### 💬 &nbsp; Extract Captions")
 
-    lang = st.selectbox(
+    st.selectbox(
         label="Select the language",
-        key="caption-lang",
+        key="caption_lang",
         options=langs,
         index=None,
         format_func=lambda x: x.split(".")[-1],
     )
 
-    format = st.radio(
+    st.radio(
         label="Select the format",
-        key="caption-format",
+        key="caption_format",
         options=["srt", "txt", "ai formatted"],
         index=0,
         horizontal=True,
-        disabled=not lang,
+        disabled=not sess.caption_lang,
     )
 
     transcript = ""
-    if lang:
-        if format == "srt":
-            transcript = yt.captions[lang].generate_srt_captions()
+    if sess.caption_lang:
+        if sess.caption_format == "srt":
+            transcript = yt.captions[sess.caption_lang].generate_srt_captions()
         else:
-            raw_transcript = yt.captions[lang].generate_txt_captions()
-            if format == "txt":
+            raw_transcript = yt.captions[sess.caption_lang].generate_txt_captions()
+            if sess.caption_format == "txt":
                 transcript = raw_transcript
-            elif format == "ai formatted":
+            elif sess.caption_format == "ai formatted":
                 transcript = add_punctuation(api_key, raw_transcript, model)
 
+    st.session_state.caption_output = transcript
     st.text_area(
         label="Captions",
-        key="caption-output",
-        value=transcript,
+        key="caption_output",
         height=400,
         disabled=not transcript,
     )
