@@ -75,3 +75,32 @@ def transcribe(
         contents=[user_prompt, audio],
     )
     return response.text
+
+
+def consolidate_messages(messages: list) -> list:
+    """Consolidate consecutive messages with the same role into single messages"""
+    if not messages:
+        return []
+
+    consolidated = []
+    current_role = None
+    current_text = ""
+
+    for message in messages:
+        if current_role is None:
+            current_role = message.role
+            current_text = message.parts[0].text
+        elif message.role == current_role:
+            # Same role, concatenate text
+            current_text += message.parts[0].text
+        else:
+            # Different role, save current and start new
+            consolidated.append((current_role, current_text))
+            current_role = message.role
+            current_text = message.parts[0].text
+
+    # Don't forget the last message
+    if current_role is not None:
+        consolidated.append((current_role, current_text))
+
+    return consolidated
