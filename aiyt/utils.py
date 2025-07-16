@@ -78,7 +78,7 @@ def transcribe(
     user_prompt: str = "Generate a transcript of the speech",
 ) -> str:
     """transcribe the audio using Gemini"""
-    filename = id.lower()
+    filename = id.lower().replace("_", "-")
     buffer, mime_type = download_audio_from_yt(id)
     client = Client(api_key=api_key)
     audio_file = upload_audio_to_gemini(filename, buffer, mime_type, client)
