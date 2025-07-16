@@ -5,6 +5,8 @@ from io import BytesIO
 from pathlib import Path
 from pytubefix import Buffer, YouTube
 
+sess = st.session_state
+
 
 def pyproject_data() -> dict:
     pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
@@ -28,22 +30,24 @@ def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     return response.text
 
 
-@st.cache_data
-def download_yt_audio(yt: YouTube) -> tuple[Buffer, str]:
+def download_audio_from_yt(id: str) -> tuple[Buffer, str]:
     """download the lowest quality audio stream to a pytubefix Buffer object"""
-    audio_stream = (
-        yt.streams.filter(only_audio=True, audio_codec="opus").order_by("abr").first()
-    )
+    yt = YouTube(f"https://youtu.be/{id}")
+    audio_streams = yt.streams.filter(only_audio=True, audio_codec="opus")
+    lowest_quality_stream = audio_streams.order_by("abr").first()
+    if not lowest_quality_stream:
+        st.error("No audio stream found")
+        st.stop()
     buffer = Buffer()
-    buffer.download_in_buffer(audio_stream)
-    mime_type = audio_stream.mime_type
+    buffer.download_in_buffer(lowest_quality_stream)
+    mime_type = lowest_quality_stream.mime_type
     return buffer, mime_type
 
 
-@st.cache_data
-def get_audio_part(mime_type: str, buffer: Buffer) -> types.Part:
-    """convert the pytubefix Buffer object to a Gemini types.Part object"""
-    return types.Part.from_bytes(data=buffer.read(), mime_type=mime_type)
+# reserve for one-off upload use cases
+# def get_audio_part(mime_type: str, buffer: Buffer) -> types.Part:
+#     """convert the pytubefix Buffer object to a Gemini types.Part object"""
+#     return types.Part.from_bytes(data=buffer.read(), mime_type=mime_type)
 
 
 def remove_duplicate_gemini_audio(name: str, client: Client):
@@ -54,11 +58,9 @@ def remove_duplicate_gemini_audio(name: str, client: Client):
             client.files.delete(name=file_name)
 
 
-@st.cache_data
-def upload_gemini_audio(
-    name: str, buffer: Buffer, mime_type: str, client: Client
-) -> types.File:
+def upload_audio_to_gemini(name: str, buffer: Buffer, mime_type: str) -> types.File:
     """upload the audio to Gemini cloud storage"""
+    client = sess.transcript_client
     io_obj: BytesIO = buffer.buffer
     io_obj.seek(0)
     upload_config = types.UploadFileConfig(mime_type=mime_type, name=name)
@@ -66,19 +68,22 @@ def upload_gemini_audio(
     return client.files.upload(file=io_obj, config=upload_config)
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def transcribe(
-    audio: types.File | types.Part,
-    client: Client,
+    id: str,
     model: str,
     system_prompt: str = "You are a professional transcriber. You output only transcript, no other text.",
     user_prompt: str = "Generate a transcript of the speech",
 ) -> str:
     """transcribe the audio using Gemini"""
-    response = client.models.generate_content(
+    filename = id.lower()
+    buffer, mime_type = download_audio_from_yt(id)
+    audio_file = upload_audio_to_gemini(filename, buffer, mime_type)
+
+    response = sess.transcript_client.models.generate_content(
         model=model,
         config=types.GenerateContentConfig(system_instruction=system_prompt),
-        contents=[user_prompt, audio],
+        contents=[user_prompt, audio_file],
     )
     return response.text
 

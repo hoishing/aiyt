@@ -1,12 +1,5 @@
 import streamlit as st
-from aiyt.utils import (
-    add_punctuation,
-    consolidate_messages,
-    download_yt_audio,
-    metadata,
-    transcribe,
-    upload_gemini_audio,
-)
+from aiyt.utils import add_punctuation, consolidate_messages, metadata, transcribe
 from google.genai import Client, types
 from pytubefix import YouTube
 from textwrap import dedent
@@ -91,7 +84,7 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -
             elif sess.caption_format == "ai formatted":
                 transcript = add_punctuation(api_key, raw_transcript, model)
 
-    st.session_state.caption_output = transcript
+    sess.caption_output = transcript
     st.text_area(
         label="Captions",
         key="caption_output",
@@ -105,17 +98,16 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -
 def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
     """Streamlit UI for transcribing audio"""
     st.markdown("#### 🗣️ &nbsp; Transcribe Audio")
-    with st.spinner("No captions found, transcribing audio with Gemini..."):
-        client = Client(api_key=api_key)
-        filename = yt.video_id.lower()
-        buffer, mime_type = download_yt_audio(yt)
-        audio_file = upload_gemini_audio(filename, buffer, mime_type, client)
-
-        transcript = transcribe(audio_file, client, model)
-        st.text_area(
-            label="Transcript", key="transcript-output", value=transcript, height=400
-        )
-        return transcript
+    if not sess.setdefault("transcribe_consent", False):
+        st.info("No captions found, transcribe audio with Gemini?")
+        if st.button("Transcribe"):
+            sess.transcribe_consent = True
+    if sess.transcribe_consent:
+        if "transcript_client" not in sess:
+            sess.transcript_client = Client(api_key=api_key)
+        sess.transcript_output = transcribe(yt.video_id, model)
+        st.text_area(label="Transcript", key="transcript_output", height=400)
+        return sess.transcript_output
 
 
 def chat_ui(transcript: str, api_key: str, model: str) -> None:
@@ -131,16 +123,16 @@ def chat_ui(transcript: str, api_key: str, model: str) -> None:
         """)
 
     # Initialize chat object in session state
-    if st.session_state.chat is None:
+    if sess.chat is None:
         client = Client(api_key=api_key)
-        st.session_state.chat = client.chats.create(
+        sess.chat = client.chats.create(
             model=model,
             config=types.GenerateContentConfig(system_instruction=sys_prompt),
         )
 
     # Display chat history with consolidated messages
     avatar = {"user": "🐒", "model": "💭"}
-    consolidated_messages = consolidate_messages(st.session_state.chat.get_history())
+    consolidated_messages = consolidate_messages(sess.chat.get_history())
     for role, text in consolidated_messages:
         with st.chat_message(role, avatar=avatar[role]):
             st.markdown(text)
@@ -154,7 +146,7 @@ def chat_ui(transcript: str, api_key: str, model: str) -> None:
         # Generate and display assistant response
         with st.chat_message("model", avatar=avatar["model"]):
             try:
-                response = st.session_state.chat.send_message_stream(prompt)
+                response = sess.chat.send_message_stream(prompt)
                 st.write_stream(chunk.text for chunk in response)
 
             except Exception as e:
