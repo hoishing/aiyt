@@ -1,6 +1,6 @@
 [project]
 name = "aiyt"
-version = "0.3.0"
+version = "0.4.0"
 description = "Transcribe, Chat and Summarize Youtube Video with AI"
 readme = "README.md"
 requires-python = ">=3.12"

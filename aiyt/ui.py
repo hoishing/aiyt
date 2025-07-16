@@ -98,12 +98,13 @@ def caption_ui(yt: YouTube | None, langs: list[str], api_key: str, model: str) -
 def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
     """Streamlit UI for transcribing audio"""
     st.markdown("#### 🗣️ &nbsp; Transcribe Audio")
-    if not sess.setdefault("transcribe_consent", False):
+    if "transcribe_consent" not in sess:
+        sess.transcribe_consent = dict()
+    if not sess.transcribe_consent.setdefault(yt.video_id, False):
         st.info("No captions found, transcribe audio with Gemini?")
         if st.button("Transcribe"):
-            sess.transcribe_consent = True
-    if sess.transcribe_consent:
-        st.write("")
+            sess.transcribe_consent[yt.video_id] = True
+    if sess.transcribe_consent[yt.video_id]:
         st.text_area(
             label="Transcript",
             value=transcribe(yt.video_id, model, api_key),
