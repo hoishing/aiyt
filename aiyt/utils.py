@@ -17,7 +17,7 @@ def pyproject_data() -> dict:
 metadata = pyproject_data()["project"]
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def add_punctuation(api_key: str, transcript: str, model: str) -> str:
     """Add punctuation to a transcript using Gemini's LLM."""
     sys_prompt = "add punctuations and appropiate paragraphs to the following text, do not add any comments"
@@ -58,9 +58,10 @@ def remove_duplicate_gemini_audio(name: str, client: Client):
             client.files.delete(name=file_name)
 
 
-def upload_audio_to_gemini(name: str, buffer: Buffer, mime_type: str) -> types.File:
+def upload_audio_to_gemini(
+    name: str, buffer: Buffer, mime_type: str, client: Client
+) -> types.File:
     """upload the audio to Gemini cloud storage"""
-    client = sess.transcript_client
     io_obj: BytesIO = buffer.buffer
     io_obj.seek(0)
     upload_config = types.UploadFileConfig(mime_type=mime_type, name=name)
@@ -72,15 +73,17 @@ def upload_audio_to_gemini(name: str, buffer: Buffer, mime_type: str) -> types.F
 def transcribe(
     id: str,
     model: str,
+    api_key: str,
     system_prompt: str = "You are a professional transcriber. You output only transcript, no other text.",
     user_prompt: str = "Generate a transcript of the speech",
 ) -> str:
     """transcribe the audio using Gemini"""
     filename = id.lower()
     buffer, mime_type = download_audio_from_yt(id)
-    audio_file = upload_audio_to_gemini(filename, buffer, mime_type)
+    client = Client(api_key=api_key)
+    audio_file = upload_audio_to_gemini(filename, buffer, mime_type, client)
 
-    response = sess.transcript_client.models.generate_content(
+    response = client.models.generate_content(
         model=model,
         config=types.GenerateContentConfig(system_instruction=system_prompt),
         contents=[user_prompt, audio_file],

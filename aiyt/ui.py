@@ -43,7 +43,7 @@ def input_ui() -> tuple[str, str, str]:
         c2.form_submit_button(
             "Submit",
             use_container_width=True,
-            on_click=lambda: sess.__setattr__("chat", None),
+            on_click=lambda: sess.update({"chat": None}),
         )
 
         submittable = api_key and model and url
@@ -103,16 +103,18 @@ def transcribe_ui(yt: YouTube, api_key: str, model: str) -> str:
         if st.button("Transcribe"):
             sess.transcribe_consent = True
     if sess.transcribe_consent:
-        if "transcript_client" not in sess:
-            sess.transcript_client = Client(api_key=api_key)
-        sess.transcript_output = transcribe(yt.video_id, model)
-        st.text_area(label="Transcript", key="transcript_output", height=400)
+        st.write("")
+        st.text_area(
+            label="Transcript",
+            value=transcribe(yt.video_id, model, api_key),
+            key="transcript_output",
+            height=400,
+        )
         return sess.transcript_output
 
 
 def chat_ui(transcript: str, api_key: str, model: str) -> None:
     """Streamlit chat interface for interacting with the transcript"""
-    # st.markdown("#### 💬 &nbsp; Chat with Transcript")
     divider(key=2)
 
     sys_prompt = dedent(f"""\
