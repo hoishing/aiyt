@@ -3,8 +3,6 @@ from aiyt.ui import app_header, caption_ui, chat_ui, divider, input_ui, transcri
 from pathlib import Path
 from pytubefix import YouTube
 
-root_folder = Path(__file__).parent.parent
-
 
 def body():
     with st.container(border=True, key="main-container"):
@@ -31,7 +29,7 @@ def body():
 
 
 def app():
-    st.html(root_folder / "style.css")
+    st.html(Path(__file__).parent / "style.css")
     app_header(icon="youtube_activity", color="red")
     st.write("")
     body()

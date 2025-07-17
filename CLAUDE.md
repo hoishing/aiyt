@@ -65,4 +65,4 @@ This is a Python Streamlit application for transcribing, chatting with, and summ
 ### Configuration
 - Ruff linting configured in pyproject.toml with specific ignores
 - Project metadata and dependencies managed via pyproject.toml
-- CSS styling loaded from root-level `style.css`
+- CSS styling loaded from `aiyt/style.css`

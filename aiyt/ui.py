@@ -1,5 +1,6 @@
 import streamlit as st
-from aiyt.utils import add_punctuation, consolidate_messages, metadata, transcribe
+from aiyt import metadata
+from aiyt.utils import add_punctuation, consolidate_messages, transcribe
 from google.genai import Client, types
 from pytubefix import YouTube
 from textwrap import dedent

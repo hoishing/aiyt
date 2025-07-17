@@ -28,13 +28,6 @@ uvx aiyt@latest
 uv tool upgrade aiyt@latest
 ```
 
-## 📺 Demo
-
-- https://youtu.be/BdSL8LLJOok
-- https://youtu.be/I5r0O7iMjKc
-
-![screenshot](https://raw.githubusercontent.com/hoishing/aiyt/refs/heads/main/screenshots/caption.webp)
-
 ## Questions
 
 - [Github issue]

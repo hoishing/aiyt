@@ -1,20 +1,9 @@
 import streamlit as st
-import tomllib
 from google.genai import Client, types
 from io import BytesIO
-from pathlib import Path
 from pytubefix import Buffer, YouTube
 
 sess = st.session_state
-
-
-def pyproject_data() -> dict:
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
-    with pyproject_path.open("rb") as f:
-        return tomllib.load(f)
-
-
-metadata = pyproject_data()["project"]
 
 
 @st.cache_data(show_spinner=False)

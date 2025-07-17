@@ -1,59 +1,66 @@
-from aiyt.utils import metadata
+import tomlkit
+from aiyt import metadata
+from textwrap import dedent
 
-name = metadata["name"]
-description = metadata["description"]
-caption = "https://www.youtube.com/watch?v=uYZ4J7ctpio"
-no_caption = "https://youtube.com/shorts/NbY29sW7gbU"
-yt_demo1 = "https://youtu.be/BdSL8LLJOok"
-yt_demo2 = "https://youtu.be/I5r0O7iMjKc"
 
-readme = f"""\
-# {name}
+def update_readme():
+    name = metadata["name"]
+    description = metadata["description"]
+    # caption = "https://www.youtube.com/watch?v=uYZ4J7ctpio"
+    # no_caption = "https://youtube.com/shorts/NbY29sW7gbU"
 
-> {description}
+    readme = dedent(f"""\
+        # {name}
 
-## Usage
+        > {description}
 
-- run with `uvx`
+        ## Usage
 
-```bash
-uvx {name}
-```
+        - run with `uvx`
 
-- install locally
+        ```bash
+        uvx {name}
+        ```
 
-```bash
-uv tool install {name}
+        - install locally
 
-# then run it
-{name}
-```
+        ```bash
+        uv tool install {name}
 
-- upgrade to the lastest version
+        # then run it
+        {name}
+        ```
 
-```bash
-uvx {name}@latest
+        - upgrade to the lastest version
 
-# upgrade installed tool
-uv tool upgrade {name}@latest
-```
+        ```bash
+        uvx {name}@latest
 
-## 📺 Demo
+        # upgrade installed tool
+        uv tool upgrade {name}@latest
+        ```
 
-- {yt_demo1}
-- {yt_demo2}
+        ## Questions
 
-![screenshot](https://raw.githubusercontent.com/hoishing/aiyt/refs/heads/main/screenshots/caption.webp)
+        - [Github issue]
+        - [LinkedIn]
 
-## Questions
-
-- [Github issue]
-- [LinkedIn]
-
-[Github issue]: https://github.com/hoishing/aiyt/issues
-[LinkedIn]: https://www.linkedin.com/in/kng2
-"""
-
-if __name__ == "__main__":
+        [Github issue]: https://github.com/hoishing/aiyt/issues
+        [LinkedIn]: https://www.linkedin.com/in/kng2
+        """)
     with open("./README.md", "w") as f:
         f.write(readme)
+
+
+def update_pyproject():
+    with open("pyproject.toml", "r") as f:
+        data = tomlkit.load(f)
+    for key in ["name", "version", "description"]:
+        data["project"][key] = metadata[key]
+    with open("pyproject.toml", "w") as f:
+        tomlkit.dump(data, f)
+
+
+if __name__ == "__main__":
+    update_readme()
+    update_pyproject()
