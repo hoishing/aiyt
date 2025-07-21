@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Stlite App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/browser@latest/build/stlite.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@latest/build/stlite.js";
+      mount(
+        {
+          requirements: ["pytubefix"], // Packages to install
+          entrypoint: "main.py", // The target file of the `streamlit run` command
+          archives: [
+            {
+              url: "./aiyt.zip",
+              format: "zip",
+              options: {},
+            },
+          ],
+          streamlitConfig: {
+            // Streamlit configuration
+            "runner.magicEnabled": false,
+            "server.enableStaticServing": true,
+            "server.runOnSave": true,
+            "server.enableXsrfProtection": false,
+            "server.enableCORS": false,
+            "client.toolbarMode": "viewer",
+            "theme.base": "dark",
+            "theme.headingFont": "Baloo, sans-serif",
+            "theme.fontFaces.family": "Baloo",
+            "theme.fontFaces.url": "app/static/baloo.woff",
+            "theme.fontFaces.weight": 400,
+            "theme.fontFaces.style": "normal",
+          },
+        },
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>

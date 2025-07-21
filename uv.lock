@@ -4,36 +4,36 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "aiyt"
-version = "0.4.6"
+version = "0.4.7"
 source = { editable = "." }
 dependencies = [
-    { name = "click" },
     { name = "google-genai" },
     { name = "pytubefix" },
-    { name = "ruff" },
     { name = "streamlit" },
-    { name = "tomlkit" },
-    { name = "watchdog" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "click" },
-    { name = "google-genai" },
-    { name = "pytubefix" },
     { name = "ruff" },
-    { name = "streamlit" },
     { name = "tomlkit" },
     { name = "watchdog" },
 ]
 
+[package.metadata]
+requires-dist = [
+    { name = "google-genai" },
+    { name = "pytubefix" },
+    { name = "streamlit" },
+]
+
 [package.metadata.requires-dev]
-dev = [{ name = "pytest" }]
+dev = [
+    { name = "pytest" },
+    { name = "ruff" },
+    { name = "tomlkit" },
+    { name = "watchdog" },
+]
 
 [[package]]
 name = "altair"

@@ -1,21 +1,11 @@
 [project]
 name = "aiyt"
-version = "0.4.7"
+version = "0.5.0"
 description = "Transcribe, Chat and Summarize Youtube Video with AI"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "streamlit",
-    "pytubefix",
-    "watchdog",
-    "google-genai",
-    "click",
-    "ruff",
-    "tomlkit",
-]
+dependencies = ["streamlit", "pytubefix", "google-genai"]
 
-[project.scripts]
-aiyt = "aiyt.launcher:main"
 
 [project.license]
 text = "MIT"
@@ -25,7 +15,7 @@ License = "https://opensource.org/licenses/MIT"
 repository = "https://github.com/hoishing/aiyt"
 
 [dependency-groups]
-dev = ["pytest"]
+dev = ["watchdog", "tomlkit", "pytest", "ruff"]
 
 [build-system]
 requires = ["hatchling"]
