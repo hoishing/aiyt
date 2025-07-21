@@ -1,4 +1,5 @@
 import click
+import sys
 from pathlib import Path
 from subprocess import Popen
 
@@ -8,7 +9,7 @@ from subprocess import Popen
 def main():
     """Launch the Streamlit app."""
 
-    cmd = f"uv run streamlit run {Path(__file__).parent / 'main.py'}"
+    cmd = f"{sys.executable} -m streamlit run {Path(__file__).parent / 'main.py'}"
     process = Popen(cmd.split())
     try:
         process.wait()
