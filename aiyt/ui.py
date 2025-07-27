@@ -5,7 +5,7 @@ from google.genai import Client, types
 from pytubefix import YouTube
 from textwrap import dedent
 
-MODELS = ["gemini-2.0-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
+MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
 sess = st.session_state
 
 
