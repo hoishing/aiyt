@@ -40,6 +40,16 @@ def update_readme():
         uv tool upgrade {name}@latest
         ```
 
+        - pre-fill API key
+
+        ```bash
+        # export API key as environment variable
+        export GOOGLE_API_KEY=your-api-key
+
+        # or set API key in the command directly
+        GOOGLE_API_KEY=your-api-key uvx aiyt
+        ```
+
         ## Questions
 
         - [Github issue]

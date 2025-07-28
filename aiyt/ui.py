@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from aiyt import metadata
 from aiyt.utils import add_punctuation, consolidate_messages, transcribe
@@ -5,7 +6,12 @@ from google.genai import Client, types
 from pytubefix import YouTube
 from textwrap import dedent
 
-MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
+MODELS = [
+    "gemini-2.0-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
+    "gemini-2.5-flash-lite",
+]
 sess = st.session_state
 
 
@@ -27,8 +33,9 @@ def input_ui() -> tuple[str, str, str]:
         c1, c2 = st.columns(2)
         api_key = c1.text_input(
             "Gemini API key",
-            key="gemini-api-key",
+            key="google-api-key",
             type="password",
+            value=os.getenv("GOOGLE_API_KEY", ""),
             help="Visit [gemini docs](https://ai.google.dev/gemini-api/docs/api-key) to get the API key",
         )
         model = c2.selectbox(

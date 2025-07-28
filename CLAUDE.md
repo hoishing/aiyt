@@ -26,9 +26,9 @@ This is a Python Streamlit application for transcribing, chatting with, and summ
 
 ### Core Components
 
-**Entry Point**: `launcher.py`
+**Entry Point**: `aiyt/launcher.py`
 - Simple Click-based CLI that launches the Streamlit app
-- Main entry point defined in pyproject.toml as `aiyt = "launcher:main"`
+- Main entry point defined in pyproject.toml as `aiyt = "aiyt.launcher:main"`
 
 **Main Application**: `aiyt/main.py`
 - Sets up the Streamlit app with CSS styling
@@ -37,32 +37,38 @@ This is a Python Streamlit application for transcribing, chatting with, and summ
 
 **UI Components**: `aiyt/ui.py`
 - `app_header()` - Renders the main header with icon and description
+- `input_ui()` - Handles API key, model selection, and YouTube URL input
 - `caption_ui()` - Interface for extracting existing captions (srt, txt, ai formatted)
 - `transcribe_ui()` - Interface for transcribing audio when captions aren't available
+- `chat_ui()` - Chat interface for interacting with transcripts
 - `divider()` - Simple divider component
 
 **Core Utilities**: `aiyt/utils.py`
-- `youtube_obj()` - Creates and validates YouTube objects
 - `add_punctuation()` - Uses Gemini to add punctuation to raw transcripts
-- `download_yt_audio()` - Downloads lowest quality audio stream to buffer
-- `upload_gemini_audio()` - Uploads audio to Gemini cloud storage
+- `download_audio_from_yt()` - Downloads lowest quality audio stream to buffer
+- `upload_audio_to_gemini()` - Uploads audio to Gemini cloud storage
 - `transcribe()` - Transcribes audio using Gemini API
+- `consolidate_messages()` - Consolidates consecutive chat messages from same role
 
 ### Key Dependencies
 - `streamlit` - Web UI framework
 - `pytubefix` - YouTube video/audio downloading
 - `google-genai` - Google Gemini AI client
 - `click` - CLI framework for launcher
-- `watchdog` - File system monitoring (likely for development)
+- `watchdog` - File system monitoring
+- `ruff` - Linting and formatting
+- `tomlkit` - TOML file processing
 
 ### Data Flow
-1. User inputs Gemini API key and YouTube URL
+1. User inputs Gemini API key, model selection, and YouTube URL via `input_ui()`
 2. App validates URL and creates YouTube object
-3. If captions exist → extract and optionally format with AI
-4. If no captions → download audio → upload to Gemini → transcribe
+3. If captions exist → extract via `caption_ui()` and optionally format with AI
+4. If no captions → download audio via `transcribe_ui()` → upload to Gemini → transcribe
 5. Display results in Streamlit text area
+6. Enable chat interface via `chat_ui()` for transcript interaction
 
 ### Configuration
-- Ruff linting configured in pyproject.toml with specific ignores
+- Ruff linting configured in pyproject.toml with specific ignores for E203, E402, E501, E712, F401, F811
 - Project metadata and dependencies managed via pyproject.toml
 - CSS styling loaded from `aiyt/style.css`
+- Metadata stored in `aiyt/__init__.py`
