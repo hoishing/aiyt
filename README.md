@@ -2,7 +2,11 @@
 
 > Transcribe, Chat and Summarize Youtube Video with AI
 
-## Usage
+## 📺 Demo
+
+[![demo-thumb]][demo]
+
+## 📦 Usage
 
 - run with `uvx`
 
@@ -38,10 +42,12 @@ export GOOGLE_API_KEY=your-api-key
 GOOGLE_API_KEY=your-api-key uvx aiyt
 ```
 
-## Questions
+## 💬 Questions
 
 - [Github issue]
 - [LinkedIn]
 
+[demo-thumb]: https://raw.githubusercontent.com/hoishing/aiyt/main/youtube-thumbnail.webp
+[demo]: https://www.youtube.com/watch?v=RMkSsaQzM64
 [Github issue]: https://github.com/hoishing/aiyt/issues
 [LinkedIn]: https://www.linkedin.com/in/kng2

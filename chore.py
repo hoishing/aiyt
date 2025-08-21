@@ -14,7 +14,11 @@ def update_readme():
 
         > {description}
 
-        ## Usage
+        ## 📺 Demo
+
+        [![demo-thumb]][demo]
+
+        ## 📦 Usage
 
         - run with `uvx`
 
@@ -50,11 +54,13 @@ def update_readme():
         GOOGLE_API_KEY=your-api-key uvx aiyt
         ```
 
-        ## Questions
+        ## 💬 Questions
 
         - [Github issue]
         - [LinkedIn]
 
+        [demo-thumb]: https://raw.githubusercontent.com/hoishing/aiyt/main/youtube-thumbnail.webp
+        [demo]: https://www.youtube.com/watch?v=RMkSsaQzM64
         [Github issue]: https://github.com/hoishing/aiyt/issues
         [LinkedIn]: https://www.linkedin.com/in/kng2
         """)
