@@ -1,6 +1,5 @@
 import os
 import streamlit as st
-from aiyt import metadata
 from aiyt.utils import add_punctuation, consolidate_messages, transcribe
 from google.genai import Client, types
 from pytubefix import YouTube
@@ -18,8 +17,8 @@ sess = st.session_state
 def app_header(icon: str, color: str):
     icon_with_color = f":{color}[:material/{icon}:]"
     with st.container(key="app-header"):
-        st.markdown(f"## {icon_with_color} &nbsp; {metadata['name']}")
-        st.caption(metadata["description"])
+        st.markdown(f"## {icon_with_color} &nbsp; aiyt")
+        st.caption("Transcribe, Chat and Summarize Youtube Video with AI")
 
 
 def divider(key: int = 1):

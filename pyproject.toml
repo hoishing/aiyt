@@ -1,6 +1,6 @@
 [project]
 name = "aiyt"
-version = "0.5.0"
+version = "0.5.1"
 description = "Transcribe, Chat and Summarize Youtube Video with AI"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -11,7 +11,6 @@ dependencies = [
     "google-genai",
     "click",
     "ruff",
-    "tomlkit",
 ]
 
 [project.scripts]
